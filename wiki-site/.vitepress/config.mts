@@ -5,7 +5,7 @@ export default withMermaid(
     defineConfig({
         title: "EliteNest",
         description: "The Enterprise NestJS Monorepo Framework",
-        base: '/',
+        base: '/elite-nest/',
         appearance: 'dark',
         themeConfig: {
             nav: [
