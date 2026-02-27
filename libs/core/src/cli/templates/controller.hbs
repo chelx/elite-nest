@@ -1,0 +1,45 @@
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { {{pascalName}}Service } from './{{kebabName}}.service';
+import { JwtAuthGuard } from '@elitenest/core';
+{{#if crud}}
+import { Create{{pascalName}}Dto } from './dto/create-{{kebabName}}.dto';
+import { Update{{pascalName}}Dto } from './dto/update-{{kebabName}}.dto';
+{{/if}}
+
+@Controller('{{kebabName}}')
+@UseGuards(JwtAuthGuard)
+export class {{pascalName}}Controller {
+constructor(private readonly {{camelName}}Service: {{pascalName}}Service) {}
+
+{{#if crud}}
+@Post()
+create(@Body() create{{pascalName}}Dto: Create{{pascalName}}Dto) {
+return this.{{camelName}}Service.create(create{{pascalName}}Dto);
+}
+
+@Get()
+findMany() {
+return this.{{camelName}}Service.findMany();
+}
+
+@Get(':id')
+findOne(@Param('id') id: string) {
+return this.{{camelName}}Service.findOne(id);
+}
+
+@Patch(':id')
+update(@Param('id') id: string, @Body() update{{pascalName}}Dto: Update{{pascalName}}Dto) {
+return this.{{camelName}}Service.update(id, update{{pascalName}}Dto);
+}
+
+@Delete(':id')
+remove(@Param('id') id: string) {
+return this.{{camelName}}Service.remove(id);
+}
+{{else}}
+@Get()
+hello() {
+return { message: 'Hello from {{pascalName}}!' };
+}
+{{/if}}
+}

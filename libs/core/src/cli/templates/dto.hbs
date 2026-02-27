@@ -1,0 +1,12 @@
+import { createZodDto } from 'nestjs-zod';
+import { z } from 'zod';
+
+export const Create{{pascalName}}Schema = z.object({
+name: z.string().min(1).describe('The name of the {{pascalName}}'),
+// Add more fields here
+});
+
+export const Update{{pascalName}}Schema = Create{{pascalName}}Schema.partial();
+
+export class Create{{pascalName}}Dto extends createZodDto(Create{{pascalName}}Schema) {}
+export class Update{{pascalName}}Dto extends createZodDto(Update{{pascalName}}Schema) {}

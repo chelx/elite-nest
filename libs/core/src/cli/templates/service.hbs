@@ -1,0 +1,61 @@
+import { Injectable, NotFoundException } from '@nestjs/common';
+{{#if repository}}
+import { {{pascalName}}Repository } from './{{kebabName}}.repository';
+{{/if}}
+{{#if crud}}
+import { Create{{pascalName}}Dto } from './dto/create-{{kebabName}}.dto';
+import { Update{{pascalName}}Dto } from './dto/update-{{kebabName}}.dto';
+{{/if}}
+
+@Injectable()
+export class {{pascalName}}Service {
+{{#if repository}}
+constructor(private readonly repository: {{pascalName}}Repository) {}
+{{else}}
+constructor() {}
+{{/if}}
+
+{{#if crud}}
+create(create{{pascalName}}Dto: Create{{pascalName}}Dto) {
+{{#if repository}}
+return this.repository.create(create{{pascalName}}Dto);
+{{else}}
+return { id: 1, ...create{{pascalName}}Dto };
+{{/if}}
+}
+
+findMany() {
+{{#if repository}}
+return this.repository.findMany();
+{{else}}
+return [];
+{{/if}}
+}
+
+async findOne(id: string) {
+{{#if repository}}
+const item = await this.repository.findUnique(id);
+if (!item) throw new NotFoundException(`{{pascalName}} #${id} not found`);
+return item;
+{{else}}
+return { id };
+{{/if}}
+}
+
+update(id: string, update{{pascalName}}Dto: Update{{pascalName}}Dto) {
+{{#if repository}}
+return this.repository.update(id, update{{pascalName}}Dto);
+{{else}}
+return { id, ...update{{pascalName}}Dto };
+{{/if}}
+}
+
+remove(id: string) {
+{{#if repository}}
+return this.repository.softDelete(id);
+{{else}}
+return { id, deleted: true };
+{{/if}}
+}
+{{/if}}
+}

@@ -1,0 +1,18 @@
+import { Module } from '@nestjs/common';
+import { {{pascalName}}Controller } from './{{kebabName}}.controller';
+import { {{pascalName}}Service } from './{{kebabName}}.service';
+{{#if repository}}
+import { {{pascalName}}Repository } from './{{kebabName}}.repository';
+{{/if}}
+
+@Module({
+  controllers: [{{pascalName}}Controller],
+  providers: [
+    {{pascalName}}Service,
+    {{#if repository}}
+    {{pascalName}}Repository,
+    {{/if}}
+  ],
+  exports: [{{pascalName}}Service],
+})
+export class {{pascalName}}Module {}

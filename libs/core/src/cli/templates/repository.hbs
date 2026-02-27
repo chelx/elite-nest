@@ -1,0 +1,9 @@
+import { Injectable } from '@nestjs/common';
+import { BaseRepository, PrismaService } from '@elitenest/core';
+
+@Injectable()
+export class {{pascalName}}Repository extends BaseRepository<any> { // TODO: Replace any with Prisma Type
+    constructor(prisma: PrismaService) {
+    super(prisma, '{{camelName}}');
+    }
+    }
