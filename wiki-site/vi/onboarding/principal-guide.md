@@ -45,6 +45,41 @@ graph TD
     Audit --> Winston[Winston / File System]
 ```
 
+## Quan hệ Thực thể Cốt lõi (ERD)
+
+```mermaid
+erDiagram
+    TENANT ||--o{ USER : "sở hữu"
+    TENANT ||--o{ PRODUCT : "sở hữu"
+    TENANT ||--o{ AUDIT_LOG : "sở hữu"
+    USER ||--o{ AUDIT_LOG : "kích hoạt"
+    
+    TENANT {
+        string id PK
+        string name
+        datetime createdAt
+    }
+    USER {
+        string id PK
+        string tenantId FK
+        string email
+        string[] roles
+    }
+    PRODUCT {
+        string id PK
+        string tenantId FK
+        string name
+        datetime deletedAt "Xóa mềm"
+    }
+    AUDIT_LOG {
+        string id PK
+        string tenantId FK
+        string userId FK
+        string action
+        json changes
+    }
+```
+
 ## Đánh đổi Thiết kế (Trade-offs)
 
 1.  **Audit không đồng bộ (Asynchronous Auditing)**: Chúng tôi chọn mô hình "fire and forget" cho audit logs.

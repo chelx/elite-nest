@@ -26,23 +26,18 @@ Inject `StorageService` vào class của bạn:
 constructor(private readonly storage: StorageService) {}
 ```
 
-### Các thao tác File cơ bản
-
-```typescript
-// Tải lên một file
-const filePath = await this.storage.put('avatar.png', fileBuffer);
-
-// Lấy nội dung file
-const buffer = await this.storage.get('avatar.png');
-
-// Kiểm tra file có tồn tại không
-if (await this.storage.exists('avatar.png')) {
-    // ...
-}
-
 // Xóa một file
 await this.storage.delete('avatar.png');
 ```
+
+## Tra cứu API
+
+| Phương thức | Tham số | Kiểu trả về | Mô tả |
+| :--- | :--- | :--- | :--- |
+| `get(path: string)` | `path` | `Promise<Buffer>` | Lấy nội dung thô của file từ bộ nhớ. |
+| `put(path, data)` | `path`, `Buffer \| string` | `Promise<string>` | Lưu file vào thư mục gốc đã cấu hình. Trả về đường dẫn tương đối. |
+| `delete(path: string)` | `path` | `Promise<void>` | Xóa file khỏi bộ nhớ. |
+| `exists(path: string)` | `path` | `Promise<boolean>` | Kiểm tra xem file có tồn tại trong backend lưu trữ hay không. |
 
 ## Cấu hình riêng cho S3
 

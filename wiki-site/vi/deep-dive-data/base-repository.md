@@ -27,12 +27,19 @@ export class ProductRepository extends BaseRepository<Product> {
 
 `BaseRepository` cung cấp sẵn các phương thức sau:
 
-- `findMany(params)`: Tìm kiếm nhiều bản ghi (tự động lọc).
-- `findUnique(id)`: Tìm một bản ghi duy nhất theo ID.
-- `create(data)`: Tạo bản ghi mới (tự động chèn `tenantId`).
-- `update(id, data)`: Cập nhật bản ghi hiện có.
 - `softDelete(id)`: Đánh dấu bản ghi là đã xóa.
 - `restore(id)`: Khôi phục bản ghi đã xóa.
+
+## Tra cứu API
+
+| Phương thức | Tham số | Kiểu trả về | Mô tả |
+| :--- | :--- | :--- | :--- |
+| `findMany(args?)` | `Prisma.Args` | `Promise<T[]>` | Tìm kiếm nhiều bản ghi. Tự động lọc theo `tenantId` và `deletedAt`. |
+| `findUnique(id)` | `string` | `Promise<T \| null>` | Tìm kiếm một bản ghi duy nhất theo ID. |
+| `create(data)` | `Partial<T>` | `Promise<T>` | Tạo bản ghi mới. Tự động tiêm `tenantId`. |
+| `update(id, data)` | `id`, `Partial<T>` | `Promise<T>` | Cập nhật bản ghi hiện có theo ID. |
+| `softDelete(id)` | `string` | `Promise<T>` | Thiết lập `deletedAt` thành timestamp hiện tại. |
+| `restore(id)` | `string` | `Promise<T>` | Thiết lập `deletedAt` về lại `null`. |
 
 ## Ví dụ: Truy vấn Tùy chỉnh
 

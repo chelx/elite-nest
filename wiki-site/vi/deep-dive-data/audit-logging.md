@@ -36,6 +36,22 @@ sequenceDiagram
     Repo-->>App: return NewRecord
 ```
 
+## Luồng xử lý Ẩn thông tin (Redaction Engine)
+
+Để đảm bảo an toàn PII, EliteNest xử lý tất cả nhật ký log thông qua một engine ẩn thông tin đệ quy.
+
+```mermaid
+graph LR
+    Log[Bản ghi Log Gốc] --> Engine{Redaction Engine}
+    Engine --> KeyCheck{Key có trong danh sách đen?}
+    KeyCheck -- CÓ --> Mask[Thay thế bằng '********']
+    KeyCheck -- KHÔNG --> ObjectCheck{Giá trị là một Object?}
+    ObjectCheck -- CÓ --> Recurse[Gọi đệ quy]
+    ObjectCheck -- KHÔNG --> Keep[Giữ nguyên giá trị]
+    Mask --> Final[Bản ghi Log Sạch]
+    Keep --> Final
+```
+
 ## Ẩn thông tin nhạy cảm (PII Redaction)
 
 Để tuân thủ các tiêu chuẩn quyền riêng tư (GDPR, v.v.), EliteNest tự động che giấu các trường nhạy cảm trong cột `changes`:

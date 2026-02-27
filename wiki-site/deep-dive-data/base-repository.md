@@ -31,8 +31,19 @@ The `BaseRepository` provides the following methods out of the box:
 - `findUnique(id)`: Find a single record by its ID.
 - `create(data)`: Create a new record (automatically injects `tenantId`).
 - `update(id, data)`: Update an existing record.
-- `softDelete(id)`: Marks a record as deleted.
-- `restore(id)`: Un-deletes a record.
+- `softDelete(id)`: Mark a record as deleted.
+- `restore(id)`: Recover a deleted record.
+
+## API Reference
+
+| Method | Parameters | Return Type | Description |
+| :--- | :--- | :--- | :--- |
+| `findMany(args?)` | `Prisma.Args` | `Promise<T[]>` | Finds multiple records. Automatically filters by `tenantId` and `deletedAt`. |
+| `findUnique(id)` | `string` | `Promise<T \| null>` | Finds a single record by ID. |
+| `create(data)` | `Partial<T>` | `Promise<T>` | Creates a new record. Automatically injects `tenantId`. |
+| `update(id, data)` | `id`, `Partial<T>` | `Promise<T>` | Updates an existing record by ID. |
+| `softDelete(id)` | `string` | `Promise<T>` | Sets `deletedAt` to current timestamp. |
+| `restore(id)` | `string` | `Promise<T>` | Resets `deletedAt` to `null`. |
 
 ## Example: Custom Query
 

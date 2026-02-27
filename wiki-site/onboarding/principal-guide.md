@@ -45,6 +45,41 @@ graph TD
     Audit --> Winston[Winston / File System]
 ```
 
+## Core Entity Relationships (ERD)
+
+```mermaid
+erDiagram
+    TENANT ||--o{ USER : "owns"
+    TENANT ||--o{ PRODUCT : "owns"
+    TENANT ||--o{ AUDIT_LOG : "owns"
+    USER ||--o{ AUDIT_LOG : "triggers"
+    
+    TENANT {
+        string id PK
+        string name
+        datetime createdAt
+    }
+    USER {
+        string id PK
+        string tenantId FK
+        string email
+        string[] roles
+    }
+    PRODUCT {
+        string id PK
+        string tenantId FK
+        string name
+        datetime deletedAt "Soft-delete"
+    }
+    AUDIT_LOG {
+        string id PK
+        string tenantId FK
+        string userId FK
+        string action
+        json changes
+    }
+```
+
 ## Design Trade-offs
 
 1.  **Asynchronous Auditing**: We chose a "fire and forget" model for audit logs. 

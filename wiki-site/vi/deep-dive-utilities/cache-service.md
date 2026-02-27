@@ -15,16 +15,17 @@ Inject `CacheService` vào class của bạn:
 constructor(private readonly cache: CacheService) {}
 ```
 
-### Lưu và Lấy dữ liệu
-
-Dịch vụ tự động nhận diện bối cảnh tenant hiện tại bằng `AsyncLocalStorage`.
-
-```typescript
-// Key sẽ trở thành 'tenant-1:user:profile:123'
-await this.cache.set('user:profile:123', { name: 'John' }, 3600);
-
 const profile = await this.cache.get('user:profile:123');
 ```
+
+## Tra cứu API
+
+| Phương thức | Tham số | Kiểu trả về | Mô tả |
+| :--- | :--- | :--- | :--- |
+| `get<T>(key: string)` | `key` | `Promise<T \| null>` | Lấy giá trị từ cache. Tự động thêm tiền tố `tenantId`. |
+| `set<T>(key, val, ttl?)` | `key`, `value`, `ttl` (giây) | `Promise<void>` | Lưu giá trị vào cache với thời gian sống (TTL) tùy chọn. |
+| `del(key: string)` | `key` | `Promise<void>` | Xóa một key cụ thể khỏi cache. |
+| `reset()` | không | `Promise<void>` | Xóa tất cả các key thuộc về tenant hiện tại. |
 
 ## Các thao tác nâng cao
 

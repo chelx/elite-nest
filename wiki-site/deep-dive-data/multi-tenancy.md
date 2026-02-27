@@ -16,6 +16,28 @@ The implementation relies on two core technologies:
 4.  **Auto-Filtering**: Prisma modifies the SQL query on the fly:
     - `SELECT * FROM Product` becomes `SELECT * FROM Product WHERE tenantId = 'current-tenant-id'`.
 
+## Internal Execution Flow
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant Guard as JwtStrategy / AuthGuard
+    participant Context as AsyncLocalStorage (ALS)
+    participant Repo as BaseRepository
+    participant Extension as Prisma Multi-tenancy Extension
+    participant DB as PostgreSQL
+
+    User->>Guard: Request with JWT (tenantId: "T1")
+    Guard->>Context: runInTenantContext("T1", next)
+    Context->>Repo: repository.findMany()
+    Repo->>Extension: prisma.model.findMany()
+    Extension->>Context: getTenantContext() -> { tenantId: "T1" }
+    Note over Extension: Rewrite query: WHERE tenantId = "T1"
+    Extension->>DB: SELECT * FROM ... WHERE tenantId = "T1"
+    DB-->>Extension: Result Set [T1 records only]
+    Extension-->>User: Response
+```
+
 ## Code Reference: The Extension
 
 ```typescript

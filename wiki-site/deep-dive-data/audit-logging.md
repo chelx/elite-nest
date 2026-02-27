@@ -32,8 +32,24 @@ sequenceDiagram
     Repo-->>Audit: log(action, changes)
     Audit-->>Driver: redact(changes)
     Audit-->>Driver: write(entry)
-    Note right of Audit: Asynchronous (Non-blocking)
+    Note right of Audit: Runs asynchronously (Non-blocking)
     Repo-->>App: return NewRecord
+```
+
+## Data Redaction Engine Flow
+
+To ensure PII safety, EliteNest processes all logs through a recursive redaction engine.
+
+```mermaid
+graph LR
+    Log[Raw Log Entry] --> Engine{Redaction Engine}
+    Engine --> KeyCheck{Is key in blacklist?}
+    KeyCheck -- YES --> Mask[Replace with '********']
+    KeyCheck -- NO --> ObjectCheck{Is value an object?}
+    ObjectCheck -- YES --> Recurse[Recursive Call]
+    ObjectCheck -- NO --> Keep[Keep Original Value]
+    Mask --> Final[Clean Log Entry]
+    Keep --> Final
 ```
 
 ## PII Redaction

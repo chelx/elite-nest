@@ -8,13 +8,29 @@ Việc triển khai dựa trên hai công nghệ cốt lõi:
 1.  **AsyncLocalStorage (ALS)**: Lưu trữ `tenantId` của request hiện tại và chia sẻ nó xuyên suốt call stack.
 2.  **Prisma Extensions**: Can thiệp vào mọi thao tác của database để tự động chèn các bộ lọc.
 
-### Luồng xử lý của một Request
+- `SELECT * FROM Product` trở thành `SELECT * FROM Product WHERE tenantId = 'id-tenant-hien-tai'`.
 
-1.  **Xác thực**: `JwtStrategy` trích xuất `tenantId` từ payload của JWT.
-2.  **Tiêm bối cảnh (Context Injection)**: `JwtStrategy` sử dụng `runInTenantContext(tenantId, ...)` để bao bọc toàn bộ quá trình thực thi request.
-3.  **Truy vấn Database**: Khi bất kỳ phương thức repository nào được gọi, Prisma Extension sẽ đọc `tenantId` từ context ALS đang hoạt động.
-4.  **Tự động Lọc**: Prisma sửa đổi câu lệnh SQL ngay lập tức:
-    - `SELECT * FROM Product` trở thành `SELECT * FROM Product WHERE tenantId = 'id-tenant-hien-tai'`.
+## Luồng Thực thi Nội bộ (Internal Flow)
+
+```mermaid
+sequenceDiagram
+    participant User as Người dùng
+    participant Guard as JwtStrategy / AuthGuard
+    participant Context as AsyncLocalStorage (ALS)
+    participant Repo as BaseRepository
+    participant Extension as Prisma Multi-tenancy Extension
+    participant DB as PostgreSQL
+
+    User->>Guard: Request kèm JWT (tenantId: "T1")
+    Guard->>Context: runInTenantContext("T1", next)
+    Context->>Repo: repository.findMany()
+    Repo->>Extension: prisma.model.findMany()
+    Extension->>Context: getTenantContext() -> { tenantId: "T1" }
+    Note over Extension: Rewrite query: WHERE tenantId = "T1"
+    Extension->>DB: SELECT * FROM ... WHERE tenantId = "T1"
+    DB-->>Extension: Kết quả (Chỉ bản ghi T1)
+    Extension-->>User: Trả về Response
+```
 
 ## Tham chiếu Code: Extension
 

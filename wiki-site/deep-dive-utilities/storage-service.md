@@ -26,23 +26,18 @@ Inject the `StorageService` into your class:
 constructor(private readonly storage: StorageService) {}
 ```
 
-### Basic File Operations
-
-```typescript
-// Upload a file
-const filePath = await this.storage.put('avatar.png', fileBuffer);
-
-// Get a file
-const buffer = await this.storage.get('avatar.png');
-
-// Check if file exists
-if (await this.storage.exists('avatar.png')) {
-    // ...
-}
-
 // Delete a file
 await this.storage.delete('avatar.png');
 ```
+
+## API Reference
+
+| Method | Parameters | Return Type | Description |
+| :--- | :--- | :--- | :--- |
+| `get(path: string)` | `path` | `Promise<Buffer>` | Retrieves the raw file content from storage. |
+| `put(path, data)` | `path`, `Buffer \| string` | `Promise<string>` | Saves a file to the configured storage root. Returns the relative path. |
+| `delete(path: string)` | `path` | `Promise<void>` | Removes a file from storage. |
+| `exists(path: string)` | `path` | `Promise<boolean>` | Checks if a file exists in the storage backend. |
 
 ## S3-Specific Configuration
 
